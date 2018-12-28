@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include carapace *.css
+recursive-include carapace *.csv
+recursive-include carapace *.html
+recursive-include carapace *.ico
+recursive-include carapace *.js
+recursive-include carapace *.json
+recursive-include carapace *.md
+recursive-include carapace *.png
+recursive-include carapace *.py
+recursive-include carapace *.svg
+recursive-include carapace *.txt
+recursive-exclude carapace *.pyc
