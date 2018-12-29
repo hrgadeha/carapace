@@ -19,6 +19,8 @@ frappe.ui.form.on('Gate Entry', {
 
 cur_frm.add_fetch("po_no","transaction_date","po_date")
 cur_frm.add_fetch("po_no_manual","transaction_date","po_date")
+cur_frm.add_fetch("po_no","supplier","supplier_name")
+cur_frm.add_fetch("po_no_manual","supplier","supplier_name")
 
 frappe.ui.form.on("Gate Entry", {
     "po_no": function(frm) {
