@@ -7,6 +7,27 @@ frappe.ui.form.on('Gate Entry', {
 	}
 });
 
+frappe.ui.form.on("Gate Entry", "onload", function(frm) {
+    cur_frm.set_query("po_no", function() {
+        return {
+            "filters": {
+                "project_site": frm.doc.project_site_name
+            }
+        };
+    });
+});
+
+frappe.ui.form.on('Gate Entry', {
+	"edit_po_date": function(frm) {
+		if (frm.doc.edit_po_date == 1){
+			frm.set_df_property("po_date","read_only",0);
+		}
+		else{
+			frm.set_df_property("po_date","read_only",1);
+		}
+	}
+});
+
 frappe.ui.form.on('Gate Entry', {
 	"material_against_po_no": function(frm) {
 		frm.set_value("po_no","");
@@ -33,6 +54,8 @@ frappe.ui.form.on("Gate Entry", {
 				console.log(row.item_code)
                 		d.item_code = row.item_code;
 				d.item_name = row.item_name;
+				d.qty = row.qty;
+				d.uom = row.uom;
 				d.description = row.description;
                 	frm.refresh_field("gate_entry_items");
             });
