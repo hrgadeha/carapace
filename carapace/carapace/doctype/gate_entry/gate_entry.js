@@ -20,10 +20,12 @@ frappe.ui.form.on("Gate Entry", "onload", function(frm) {
 frappe.ui.form.on('Gate Entry', {
 	"edit_po_date": function(frm) {
 		if (frm.doc.edit_po_date == 1){
-			frm.set_df_property("po_date","read_only",0);
+			frm.set_df_property("posting_date","read_only",0);
+			frm.set_df_property("posting_time","read_only",0);
 		}
 		else{
-			frm.set_df_property("po_date","read_only",1);
+			frm.set_df_property("posting_date","read_only",1);
+			frm.set_df_property("posting_time","read_only",1);
 		}
 	}
 });
@@ -31,6 +33,8 @@ frappe.ui.form.on('Gate Entry', {
 frappe.ui.form.on('Gate Entry', {
 	"material_against_po_no": function(frm) {
 		frm.set_value("po_no","");
+		frm.set_value("po_date","");
+		frm.set_value("supplier_name","");
 		if (frm.doc.po_no == ""){
 			cur_frm.clear_table("gate_entry_items");
 	               	frm.refresh_field("gate_entry_items");
