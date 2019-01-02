@@ -31,8 +31,23 @@ frappe.ui.form.on('Gate Entry', {
 });
 
 frappe.ui.form.on('Gate Entry', {
-	"material_against_po_no": function(frm) {
+	"gate_entry_type": function(frm) {
+		if (frm.doc.gate_entry_type == "Rejection"){
+			frm.set_df_property("po_no_manual","reqd",1);
+			frm.set_df_property("purchase_receipt_no","reqd",1);
+		}
+		else{
+			frm.set_df_property("po_no_manual","reqd",0);
+			frm.set_df_property("purchase_receipt_no","reqd",0);
+		}
+	}
+});
+
+frappe.ui.form.on('Gate Entry', {
+	"gate_entry_type": function(frm) {
 		frm.set_value("po_no","");
+		frm.set_value("po_no_manual","");
+		frm.set_value("purchase_receipt_no","");
 		frm.set_value("po_date","");
 		frm.set_value("supplier_name","");
 		if (frm.doc.po_no == ""){
