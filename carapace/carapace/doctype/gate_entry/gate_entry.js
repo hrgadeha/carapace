@@ -7,6 +7,15 @@ frappe.ui.form.on('Gate Entry', {
 	}
 });
 
+frappe.ui.form.on('Gate Entry', {
+	"type_of_vehicle": function(frm) {
+		frm.set_value("person_name","");
+		frm.set_value("contact_number","");
+		frm.set_value("vehicle_number","");
+		frm.set_value("driver_name","");
+	}
+});
+
 frappe.ui.form.on("Gate Entry", "onload", function(frm) {
     cur_frm.set_query("po_no", function() {
         return {
