@@ -16,6 +16,15 @@ frappe.ui.form.on('Gate Entry', {
 	}
 });
 
+frappe.ui.form.on('Gate Entry', {
+	"bill_or_challan": function(frm) {
+		frm.set_value("bill_no","");
+		frm.set_value("challan_no","");
+		frm.set_value("bill_date","");
+		frm.set_value("challan_date","");
+	}
+});
+
 frappe.ui.form.on("Gate Entry", "onload", function(frm) {
     cur_frm.set_query("po_no", function() {
         return {
