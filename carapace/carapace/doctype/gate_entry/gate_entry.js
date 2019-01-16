@@ -35,6 +35,16 @@ frappe.ui.form.on("Gate Entry", "onload", function(frm) {
     });
 });
 
+frappe.ui.form.on("Gate Entry", "onload", function(frm) {
+    cur_frm.set_query("returnable_po", function() {
+        return {
+            "filters": {
+                "project_site": frm.doc.project_site_name
+            }
+        };
+    });
+});
+
 frappe.ui.form.on('Gate Entry', {
 	"edit_po_date": function(frm) {
 		if (frm.doc.edit_po_date == 1){
@@ -79,6 +89,9 @@ cur_frm.add_fetch("po_no","transaction_date","po_date")
 cur_frm.add_fetch("po_no_manual","transaction_date","po_date")
 cur_frm.add_fetch("po_no","supplier","supplier_name")
 cur_frm.add_fetch("po_no_manual","supplier","supplier_name")
+cur_frm.add_fetch("returnable_po","supplier","supplier_name")
+cur_frm.add_fetch("returnable_po","transaction_date","po_date")
+
 
 frappe.ui.form.on("Gate Entry", {
     "po_no": function(frm) {
