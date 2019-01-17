@@ -60,13 +60,19 @@ frappe.ui.form.on('Gate Entry', {
 
 frappe.ui.form.on('Gate Entry', {
 	"gate_entry_type": function(frm) {
-		if (frm.doc.gate_entry_type == "Rejection"){
+		if (frm.doc.gate_entry_type == "Rejection By ERP"){
 			frm.set_df_property("po_no_manual","reqd",1);
 			frm.set_df_property("purchase_receipt_no","reqd",1);
+		}
+		else if (frm.doc.gate_entry_type == "Manual Rejection"){
+			frm.set_df_property("rejection_po","reqd",1);
+			frm.set_df_property("rejection_purchase_receipt_no","reqd",1);
 		}
 		else{
 			frm.set_df_property("po_no_manual","reqd",0);
 			frm.set_df_property("purchase_receipt_no","reqd",0);
+			frm.set_df_property("rejection_po","reqd",0);
+			frm.set_df_property("rejection_purchase_receipt_no","reqd",0);
 		}
 	}
 });
