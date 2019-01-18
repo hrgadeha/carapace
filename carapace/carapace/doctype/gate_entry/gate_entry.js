@@ -45,6 +45,27 @@ frappe.ui.form.on("Gate Entry", "onload", function(frm) {
     });
 });
 
+frappe.ui.form.on("Gate Entry", "onload", function(frm) {
+    cur_frm.set_query("po_no_manual", function() {
+        return {
+            "filters": {
+                "project_site": frm.doc.project_site_name
+            }
+        };
+    });
+});
+
+frappe.ui.form.on("Gate Entry", "onload", function(frm) {
+    cur_frm.set_query("purchase_receipt_no", function() {
+        return {
+            "filters": {
+                "po": frm.doc.po_no_manual,
+		"status": "To Bill"
+            }
+        };
+    });
+});
+
 frappe.ui.form.on('Gate Entry', {
 	"edit_po_date": function(frm) {
 		if (frm.doc.edit_po_date == 1){
@@ -100,6 +121,29 @@ cur_frm.add_fetch("returnable_po","transaction_date","po_date")
 
 
 frappe.ui.form.on("Gate Entry", {
+    "purchase_receipt_no": function(frm) {
+	if (frm.doc.purchase_receipt_no!= ""){
+        	frappe.model.with_doc("Purchase Receipt", frm.doc.purchase_receipt_no, function() {
+		cur_frm.clear_table("rejection_gate_entry_items");
+            		var tabletransfer= frappe.model.get_doc("Purchase Receipt", frm.doc.purchase_receipt_no)
+            		$.each(tabletransfer.items, function(index, row){
+				if(row.rejected_qty != 0){
+                		var d = frm.add_child("rejection_gate_entry_items");
+                		d.item_code = row.item_code;
+				d.item_name = row.item_name;
+				d.qty = row.received_qty;
+				d.rejected_qty = row.rejected_qty;
+				d.uom = row.uom;
+				d.description = row.description;
+                	frm.refresh_field("rejection_gate_entry_items");
+			}
+            });
+        });
+    }
+}
+});
+
+frappe.ui.form.on("Gate Entry", {
     "po_no": function(frm) {
 	if (frm.doc.po_no!= ""){
         	frappe.model.with_doc("Purchase Order", frm.doc.po_no, function() {
@@ -107,7 +151,6 @@ frappe.ui.form.on("Gate Entry", {
             		var tabletransfer= frappe.model.get_doc("Purchase Order", frm.doc.po_no)
             		$.each(tabletransfer.items, function(index, row){
                 		var d = frm.add_child("gate_entry_items");
-				console.log(row.item_code)
                 		d.item_code = row.item_code;
 				d.item_name = row.item_name;
 				d.qty = row.qty;
