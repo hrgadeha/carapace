@@ -9,7 +9,6 @@ frappe.ui.form.on('Gate Entry', {
 
 frappe.ui.form.on('Gate Entry', {
 	"type_of_vehicle": function(frm) {
-		frm.set_value("person_name","");
 		frm.set_value("contact_number","");
 		frm.set_value("vehicle_number","");
 		frm.set_value("driver_name","");
@@ -94,17 +93,6 @@ frappe.ui.form.on('Gate Entry', {
 			frm.set_df_property("purchase_receipt_no","reqd",0);
 			frm.set_df_property("rejection_po","reqd",0);
 			frm.set_df_property("rejection_purchase_receipt_no","reqd",0);
-		}
-	}
-});
-
-frappe.ui.form.on('Gate Entry', {
-	"type_of_vehicle": function(frm) {
-		if (frm.doc.type_of_vehicle == "By Hand"){
-			frm.set_df_property("contact_number","reqd",1);
-		}
-		else{
-			frm.set_df_property("contact_number","reqd",0);
 		}
 	}
 });
