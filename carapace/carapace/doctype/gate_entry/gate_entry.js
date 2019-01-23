@@ -99,6 +99,17 @@ frappe.ui.form.on('Gate Entry', {
 });
 
 frappe.ui.form.on('Gate Entry', {
+	"type_of_vehicle": function(frm) {
+		if (frm.doc.type_of_vehicle == "By Hand"){
+			frm.set_df_property("contact_number","reqd",1);
+		}
+		else{
+			frm.set_df_property("contact_number","reqd",0);
+		}
+	}
+});
+
+frappe.ui.form.on('Gate Entry', {
 	"gate_entry_type": function(frm) {
 		frm.set_value("po_no","");
 		frm.set_value("po_no_manual","");
