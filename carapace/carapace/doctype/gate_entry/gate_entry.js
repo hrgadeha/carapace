@@ -107,10 +107,14 @@ frappe.ui.form.on('Gate Entry', {
 		if (frm.doc.po_no == ""){
 			cur_frm.clear_table("gate_entry_items");
 	               	frm.refresh_field("gate_entry_items");
+			cur_frm.clear_table("rejection_gate_entry_items");
+	               	frm.refresh_field("rejection_gate_entry_items");
 		}
 	}
 });
 
+cur_frm.add_fetch('item_code', 'item_name', 'item_name')
+cur_frm.add_fetch('item_code', 'stock_uom', 'uom')
 cur_frm.add_fetch("po_no","transaction_date","po_date")
 cur_frm.add_fetch("po_no_manual","transaction_date","po_date")
 cur_frm.add_fetch("po_no","supplier","supplier_name")
