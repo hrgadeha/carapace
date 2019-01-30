@@ -120,9 +120,6 @@ cur_frm.add_fetch("po_no","transaction_date","po_date")
 cur_frm.add_fetch("po_no_manual","transaction_date","po_date")
 cur_frm.add_fetch("po_no","supplier","supplier_name")
 cur_frm.add_fetch("po_no_manual","supplier","supplier_name")
-cur_frm.add_fetch("returnable_po","supplier","supplier_name")
-cur_frm.add_fetch("returnable_po","transaction_date","po_date")
-
 
 frappe.ui.form.on("Gate Entry", {
     "purchase_receipt_no": function(frm) {
