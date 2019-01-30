@@ -27,9 +27,10 @@ frappe.ui.form.on('Gate Entry', {
 frappe.ui.form.on("Gate Entry", "onload", function(frm) {
     cur_frm.set_query("po_no", function() {
         return {
-            "filters": {
-                "project_site": frm.doc.project_site_name
-            }
+            "filters": [
+                ["Purchase Order", "gate_entry", "=", ""],
+                ["Purchase Order", "project_site", "=", frm.doc.project_site_name]
+            ]
         };
     });
 });
@@ -163,5 +164,21 @@ frappe.ui.form.on("Gate Entry", {
             });
         });
     }
+}
+});
+
+frappe.ui.form.on("Gate Entry", "on_submit", function(frm, doctype, name) {
+	if(frm.doc.po_no != ""){
+frappe.call({
+	"method": "carapace.carapace.doctype.gate_entry.gate_entry.UpdatePO",
+	args: {
+		doctype: "Gate Entry",
+		po_no: frm.doc.po_no,
+		name: frm.doc.name
+     	},
+
+	callback:function(r){
+     ;}
+});
 }
 });
