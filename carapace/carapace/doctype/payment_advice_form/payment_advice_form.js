@@ -318,7 +318,7 @@ frappe.ui.form.on('Payment Advice Form', 'party', function(frm) {
 });
 
 frappe.ui.form.on("Payment Advice Form", {
-  purchase_order: function(frm) {
+  get_details: function(frm) {
     if (frm.doc.purchase_order){
 	cur_frm.refresh();
 	cur_frm.clear_table("payment_advice_details");
