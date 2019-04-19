@@ -13,6 +13,7 @@ cur_frm.add_fetch("purchase_order","total","total_amount")
 cur_frm.add_fetch("purchase_order","grand_total","grand_total")
 cur_frm.add_fetch("purchase_order","total_taxes_and_charges","total_taxes_amount")
 cur_frm.add_fetch("purchase_order","outstanding_amount","outstanding_amount")
+cur_frm.add_fetch("purchase_order","project_site","project_site")
 
 frappe.ui.form.on("Payment Advice Form", {
     "purchase_order": function(frm) {
@@ -133,8 +134,10 @@ frappe.ui.form.on('Payment Advice Form', {
 	"advice_type": function(frm) {
 		if (frm.doc.advice_type == "Payment Advice Against PO"){
 			frm.set_value("party_type","Supplier");
+			frm.set_df_property("party_type","read_only",1);
 			frm.set_value("party","");
 			frm.set_value("naming_series","PA/PO/.#");
+			frm.set_df_property("payment_advice_expense","hidden",1);
 			frm.set_df_property("payment_advice_item","hidden",0);
 			frm.set_df_property("payment_terms_template","hidden",0);
 			frm.set_df_property("payment_advice_payment_terms","hidden",0);
@@ -144,13 +147,15 @@ frappe.ui.form.on('Payment Advice Form', {
 			frm.set_df_property("payment_description","hidden",1);
 			frm.set_df_property("add_tax","hidden",0);
 		}
-		else{
-			frm.set_value("party_type","Employee");
+		if (frm.doc.advice_type == "General PA"){
 			frm.set_value("party","");
-			frm.set_value("naming_series","PA/EMP/.#");
+			frm.set_value("naming_series","GPA/.#");
 			frm.set_value("outstanding_amount","");
 			frm.set_value("grand_total","");
 			frm.set_value("total_amount","");
+			frm.set_value("allocate_amount","");
+			frm.set_value("add_tax","");
+			frm.set_value("allocate","");
 			frm.set_value("total_taxes_amount","");
 			frm.set_value("purchase_order","");
 			frm.set_value("po_date","");
@@ -160,22 +165,130 @@ frappe.ui.form.on('Payment Advice Form', {
 			cur_frm.clear_table("payment_advice_payment_terms");
 			cur_frm.clear_table("payment_advice_taxes");
 			frm.set_df_property("payment_advice_item","hidden",1);
+			frm.set_df_property("party_type","read_only",0);
+			frm.set_df_property("project_site","read_only",0);
+			frm.set_df_property("payment_advice_expense","hidden",0);
 			frm.set_df_property("payment_terms_template","hidden",1);
 			frm.set_df_property("payment_advice_payment_terms","hidden",1);
 			frm.set_df_property("purchase_taxes_and_charges_template","hidden",1);
 			frm.set_df_property("payment_advice_taxes","hidden",1);
+			frm.set_df_property("payment_percent","hidden",1);
 			frm.set_df_property("add_tax","hidden",1);
+			frm.set_df_property("allocate","hidden",1);
 			frm.set_df_property("subject","hidden",0);
 			frm.set_df_property("payment_description","hidden",0);
 		}
 	}
 });
 
+frappe.ui.form.on('Payment Advice Form', {
+	"onload": function(frm) {
+		if (frm.doc.advice_type == "Payment Advice Against PO"){
+			frm.set_value("party_type","Supplier");
+			frm.set_df_property("party_type","read_only",1);
+			frm.set_value("party","");
+			frm.set_value("naming_series","PA/PO/.#");
+			frm.set_df_property("payment_advice_expense","hidden",1);
+			frm.set_df_property("payment_advice_item","hidden",0);
+			frm.set_df_property("payment_terms_template","hidden",0);
+			frm.set_df_property("payment_advice_payment_terms","hidden",0);
+			frm.set_df_property("purchase_taxes_and_charges_template","hidden",0);
+			frm.set_df_property("payment_advice_taxes","hidden",0);
+			frm.set_df_property("subject","hidden",1);
+			frm.set_df_property("payment_description","hidden",1);
+			frm.set_df_property("add_tax","hidden",0);
+		}
+		if (frm.doc.advice_type == "General PA"){
+			frm.set_value("party","");
+			frm.set_value("naming_series","GPA/.#");
+			frm.set_value("outstanding_amount","");
+			frm.set_value("grand_total","");
+			frm.set_value("total_amount","");
+			frm.set_value("allocate_amount","");
+			frm.set_value("add_tax","");
+			frm.set_value("allocate","");
+			frm.set_value("total_taxes_amount","");
+			frm.set_value("purchase_order","");
+			frm.set_value("po_date","");
+			frm.set_value("payment_terms_template","");
+			frm.set_value("purchase_taxes_and_charges_template","");
+			cur_frm.clear_table("payment_advice_item");
+			cur_frm.clear_table("payment_advice_payment_terms");
+			cur_frm.clear_table("payment_advice_taxes");
+			frm.set_df_property("project_site","read_only",0);
+			frm.set_df_property("payment_advice_item","hidden",1);
+			frm.set_df_property("payment_advice_expense","hidden",0);
+			frm.set_df_property("party_type","read_only",0);
+			frm.set_df_property("payment_terms_template","hidden",1);
+			frm.set_df_property("payment_advice_payment_terms","hidden",1);
+			frm.set_df_property("purchase_taxes_and_charges_template","hidden",1);
+			frm.set_df_property("payment_advice_taxes","hidden",1);
+			frm.set_df_property("payment_percent","hidden",1);
+			frm.set_df_property("add_tax","hidden",1);
+			frm.set_df_property("allocate","hidden",1);
+			frm.set_df_property("subject","hidden",0);
+			frm.set_df_property("payment_description","hidden",0);
+		}
+	}
+});
+
+
 frappe.ui.form.on('Payment Advice Form', 'validate', function(frm) {
-    if (frm.doc.allocate_amount > frm.doc.outstanding_amount) {
+    if (frm.doc.advice_type == "Payment Advice Against PO" && frm.doc.allocate_amount > frm.doc.outstanding_amount) {
         msgprint('Allocate Amount Can Not Be Breater Than Outstanding Amount');
         validated = false;
     } 
+});
+
+frappe.ui.form.on('Payment Advice Form', 'payment_type', function(frm) {
+	if (frm.doc.payment_type == "Adhoc Payment") {
+       		frm.set_df_property("allocate_amount","read_only",0);
+    	}
+	else{
+		frm.set_df_property("allocate_amount","read_only",1);
+	}
+});
+
+frappe.ui.form.on('Payment Advice Form', 'after_save', function(frm) {
+	msgprint("This Party Has Account Balance "+frm.doc.account_balance+ " "+frm.doc.dr_cr)
+});
+
+frappe.ui.form.on("Payment Advice Expense", "qty", function(frm, cdt, cdn){
+	cur_frm.refresh();
+	cur_frm.refresh_fields();
+	var d = locals[cdt][cdn];
+	var expense = frm.doc.payment_advice_expense;
+	var total = 0;
+	frappe.model.set_value(d.doctype, d.name, "total", (d.qty * d.rate));
+   	for(var j in expense) {
+		total = total + expense[j].total;
+		frm.set_value("allocate_amount",total);
+	}	
+});
+
+frappe.ui.form.on("Payment Advice Expense", "rate", function(frm, cdt, cdn){
+	cur_frm.refresh();
+	cur_frm.refresh_fields();
+	var d = locals[cdt][cdn];
+	var expense = frm.doc.payment_advice_expense;
+	var total = 0;
+	frappe.model.set_value(d.doctype, d.name, "total", (d.qty * d.rate));
+   	for(var j in expense) {
+		total = total + expense[j].total;
+		frm.set_value("allocate_amount",total);
+	}	
+});
+
+frappe.ui.form.on("Payment Advice Expense", "payment_advice_expense_remove", function(frm, cdt, cdn){
+	var d = locals[cdt][cdn];
+	var expense = frm.doc.payment_advice_expense;
+	var total = 0;
+   	for(var j in expense) {
+		total = total + expense[j].total;
+		frm.set_value("allocate_amount",total);
+	}	
+	cur_frm.refresh();
+	cur_frm.refresh_fields();
 });
 
 frappe.ui.form.on('Payment Advice Form', 'party', function(frm) {
@@ -202,4 +315,35 @@ frappe.ui.form.on('Payment Advice Form', 'party', function(frm) {
 
 		}
 	})
+});
+
+frappe.ui.form.on("Payment Advice Form", {
+  purchase_order: function(frm) {
+    if (frm.doc.purchase_order){
+	cur_frm.refresh();
+	cur_frm.clear_table("payment_advice_details");
+	cur_frm.refresh_fields();
+	
+    frappe.call({
+    "method": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.getPA",
+args: {
+doctype: "Payment Advice Form",
+purchase_order: frm.doc.purchase_order
+},
+callback:function(r){
+	var len=r.message.length;
+	console.log(r)
+	for (var i=0;i<len;i++){
+	        var row = frm.add_child("payment_advice_details");
+		row.payment_advice = r.message[i][0];
+		row.outstanding_amount = r.message[i][1];
+		row.allocated_amount = r.message[i][2];
+		row.percent = r.message[i][3];
+		row.tax = r.message[i][4];
+	}
+		cur_frm.refresh();
+	}
+    });
+}
+}
 });

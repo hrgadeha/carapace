@@ -80,7 +80,7 @@ app_license = "MIT"
 # Hook on document methods and events
 
 doc_events = {
-	"Payment Entry": {
+	"Payment Advice Form": {
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.updateAmount"
 	}
 }

@@ -20,13 +20,22 @@ def insert_data(doctype, payment_advice):
 	return li
 
 @frappe.whitelist(allow_guest=True)
+def getPA(doctype, purchase_order):
+	query="select name, outstanding_amount, allocate_amount, payment_percent,add_tax from `tabPayment Advice Form` where purchase_order = '"+str(purchase_order)+"' ORDER BY name desc;"
+	li=[]
+	dic=frappe.db.sql(query, as_dict=True)
+	for i in dic:	
+		name,outstanding_amount,allocate_amount,payment_percent,add_tax=i['name'],i['outstanding_amount'],i['allocate_amount'],i['payment_percent'],i['add_tax']
+		li.append([name,outstanding_amount,allocate_amount,payment_percent,add_tax])
+	return li
+
+@frappe.whitelist(allow_guest=True)
 def UpdatePA(doctype, payment_advice = None):
 	doc_PA = frappe.get_doc("Payment Advice Form", payment_advice)
 	doc_PA.status = "Closed"
 	doc_PA.submit()
 
 def updateAmount(doc,method):
-	for d in doc.references:
-		sv = frappe.get_doc("Purchase Order",d.reference_name)
-		sv.outstanding_amount = d.outstanding_amount - d.allocated_amount
-		sv.submit()
+	sv = frappe.get_doc("Purchase Order",doc.purchase_order)
+	sv.outstanding_amount = doc.outstanding_amount - doc.allocate_amount
+	sv.submit()
