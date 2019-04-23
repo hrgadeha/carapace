@@ -1,6 +1,14 @@
 // Copyright (c) 2019, frappe and contributors
 // For license information, please see license.txt
 
+frappe.ui.form.on("Payment Advice Form", "view_ledger", function(frm){
+	frappe.route_options = {
+ 		"party_type": frm.doc.party_type,
+ 		"party": frm.doc.party
+ 	};
+	frappe.set_route("query-report", "General Ledger");
+});
+
 frappe.ui.form.on("Payment Advice Form", "make_payment_entry", function(frm){
 	var myWin = window.open('http://erp.carapaceinfra.in/desk#Form/Payment%20Entry/New%20Payment%20Entry%201');
 });
@@ -180,58 +188,6 @@ frappe.ui.form.on('Payment Advice Form', {
 		}
 	}
 });
-
-frappe.ui.form.on('Payment Advice Form', {
-	"onload": function(frm) {
-		if (frm.doc.advice_type == "Payment Advice Against PO"){
-			frm.set_value("party_type","Supplier");
-			frm.set_df_property("party_type","read_only",1);
-			frm.set_value("party","");
-			frm.set_value("naming_series","PA/PO/.#");
-			frm.set_df_property("payment_advice_expense","hidden",1);
-			frm.set_df_property("payment_advice_item","hidden",0);
-			frm.set_df_property("payment_terms_template","hidden",0);
-			frm.set_df_property("payment_advice_payment_terms","hidden",0);
-			frm.set_df_property("purchase_taxes_and_charges_template","hidden",0);
-			frm.set_df_property("payment_advice_taxes","hidden",0);
-			frm.set_df_property("subject","hidden",1);
-			frm.set_df_property("payment_description","hidden",1);
-			frm.set_df_property("add_tax","hidden",0);
-		}
-		if (frm.doc.advice_type == "General PA"){
-			frm.set_value("party","");
-			frm.set_value("naming_series","GPA/.#");
-			frm.set_value("outstanding_amount","");
-			frm.set_value("grand_total","");
-			frm.set_value("total_amount","");
-			frm.set_value("allocate_amount","");
-			frm.set_value("add_tax","");
-			frm.set_value("allocate","");
-			frm.set_value("total_taxes_amount","");
-			frm.set_value("purchase_order","");
-			frm.set_value("po_date","");
-			frm.set_value("payment_terms_template","");
-			frm.set_value("purchase_taxes_and_charges_template","");
-			cur_frm.clear_table("payment_advice_item");
-			cur_frm.clear_table("payment_advice_payment_terms");
-			cur_frm.clear_table("payment_advice_taxes");
-			frm.set_df_property("project_site","read_only",0);
-			frm.set_df_property("payment_advice_item","hidden",1);
-			frm.set_df_property("payment_advice_expense","hidden",0);
-			frm.set_df_property("party_type","read_only",0);
-			frm.set_df_property("payment_terms_template","hidden",1);
-			frm.set_df_property("payment_advice_payment_terms","hidden",1);
-			frm.set_df_property("purchase_taxes_and_charges_template","hidden",1);
-			frm.set_df_property("payment_advice_taxes","hidden",1);
-			frm.set_df_property("payment_percent","hidden",1);
-			frm.set_df_property("add_tax","hidden",1);
-			frm.set_df_property("allocate","hidden",1);
-			frm.set_df_property("subject","hidden",0);
-			frm.set_df_property("payment_description","hidden",0);
-		}
-	}
-});
-
 
 frappe.ui.form.on('Payment Advice Form', 'validate', function(frm) {
     if (frm.doc.advice_type == "Payment Advice Against PO" && frm.doc.allocate_amount > frm.doc.outstanding_amount) {
