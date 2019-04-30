@@ -83,15 +83,24 @@ frappe.ui.form.on("Payment Advice Payment Terms", "add", function(frm, cdt, cdn)
 	}
 	
 	frm.set_value("payment_percent",percent);
-	frm.set_value("allocate",0);
-	frm.set_value("add_tax",0);
-	frm.set_value("allocate_amount",0);
+});
+
+frappe.ui.form.on("Payment Advice Taxes", "add", function(frm, cdt, cdn){
+	var ptax = frm.doc.payment_advice_taxes;
+  	var amount = 0;
+   	for(var j in ptax) {
+		if(ptax[j].add == 1){
+		amount = amount + ptax[j].amount
+	}
+	}
+	
+	frm.set_value("total_allocate_tax",amount);
 });
 
 frappe.ui.form.on('Payment Advice Form', {
 	allocate: function(frm) {
 			var percent = frm.doc.payment_percent;
-			var tax = frm.doc.total_taxes_amount;
+			var tax = frm.doc.total_allocate_tax;
 			var allocate_amount = frm.doc.allocate_amount;
 			var total = frm.doc.total_amount;
 			var grand_total = frm.doc.grand_total;
@@ -107,7 +116,7 @@ frappe.ui.form.on('Payment Advice Form', {
 	},
 	add_tax: function(frm) {
 			var percent = frm.doc.payment_percent;
-			var tax = frm.doc.total_taxes_amount;
+			var tax = frm.doc.total_allocate_tax;
 			var allocate_amount = frm.doc.allocate_amount;
 			var total = frm.doc.total_amount;
 			var grand_total = frm.doc.grand_total;
