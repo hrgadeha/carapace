@@ -20,6 +20,7 @@ frappe.ui.form.on("Payment Advice Form", "make_payment_entry", function(frm){
 cur_frm.add_fetch("purchase_order","supplier","party")
 cur_frm.add_fetch("purchase_invoice","supplier","party")
 cur_frm.add_fetch("purchase_order","transaction_date","po_date")
+cur_frm.add_fetch("purchase_invoice","posting_date","invoice_date")
 cur_frm.add_fetch("purchase_order","payment_terms_template","payment_terms_template")
 cur_frm.add_fetch("purchase_order","taxes_and_charges","purchase_taxes_and_charges_template")
 cur_frm.add_fetch("purchase_order","total","total_amount")
