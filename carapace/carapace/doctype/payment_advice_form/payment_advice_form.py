@@ -40,3 +40,7 @@ def updateAmount(doc,method):
 		sv = frappe.get_doc("Purchase Order",doc.purchase_order)
 		sv.outstanding_amount = doc.outstanding_amount - doc.allocate_amount
 		sv.submit()
+	if doc.advice_type == 'Service Order':
+		sv = frappe.get_doc("Purchase Invoice",doc.purchase_invoice)
+		sv.advice_outstanding_amount = doc.outstanding_amount - doc.allocate_amount
+		sv.submit()
