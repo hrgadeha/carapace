@@ -12,37 +12,21 @@ frappe.ui.form.on("Payment Advice Form", "view_ledger", function(frm){
 /* ###################################################################################################################################### */
 
 frappe.ui.form.on("Payment Advice Form", "make_payment_entry", function(frm){
-	var myWin = window.open('http://erp.carapaceinfra.in/desk#Form/Payment%20Entry/New%20Payment%20Entry%201');
+	frappe.route_options = {
+ 		"payment_type": "Pay",
+ 		"party_type": frm.doc.party_type
+ 	};
+	frappe.set_route("List", "Payment Entry")
 });
 
 /* ###################################################################################################################################### */
 
-cur_frm.add_fetch("purchase_order","supplier","party")
-cur_frm.add_fetch("purchase_invoice","supplier","party")
-cur_frm.add_fetch("purchase_order","transaction_date","po_date")
-cur_frm.add_fetch("purchase_invoice","posting_date","invoice_date")
-cur_frm.add_fetch("purchase_order","payment_terms_template","payment_terms_template")
-cur_frm.add_fetch("purchase_order","taxes_and_charges","purchase_taxes_and_charges_template")
-cur_frm.add_fetch("purchase_order","total","total_amount")
-cur_frm.add_fetch("purchase_order","grand_total","grand_total")
-cur_frm.add_fetch("purchase_order","total_taxes_and_charges","total_taxes_amount")
-cur_frm.add_fetch("purchase_order","outstanding_amount","outstanding_amount")
-cur_frm.add_fetch("purchase_order","project_site","project_site")
-cur_frm.add_fetch("purchase_invoice","payment_terms_template","payment_terms_template")
-cur_frm.add_fetch("purchase_invoice","taxes_and_charges","purchase_taxes_and_charges_template")
-cur_frm.add_fetch("purchase_invoice","total","total_amount")
-cur_frm.add_fetch("purchase_invoice","grand_total","grand_total")
-cur_frm.add_fetch("purchase_invoice","total_taxes_and_charges","total_taxes_amount")
-cur_frm.add_fetch("purchase_invoice","outstanding_amount","outstanding_amount")
-
-/* ###################################################################################################################################### */
-
 frappe.ui.form.on("Payment Advice Form", {
-    "purchase_order": function(frm) {
-	if (frm.doc.purchase_order){
-        frappe.model.with_doc("Purchase Order", frm.doc.purchase_order, function() {
+    "reference_no": function(frm) {
+	if (frm.doc.reference_no){
+        frappe.model.with_doc(frm.doc.reference_type, frm.doc.reference_no, function() {
 		cur_frm.clear_table("payment_advice_item");
-           		var tabletransfer= frappe.model.get_doc("Purchase Order", frm.doc.purchase_order)
+           		var tabletransfer= frappe.model.get_doc(frm.doc.reference_type, frm.doc.reference_no)
            		$.each(tabletransfer.items, function(index, row){
                		var d = frm.add_child("payment_advice_item");
                		d.item_code = row.item_code;
@@ -54,9 +38,9 @@ frappe.ui.form.on("Payment Advice Form", {
             });
         });
         
-        frappe.model.with_doc("Purchase Order", frm.doc.purchase_order, function() {
+        frappe.model.with_doc(frm.doc.reference_type, frm.doc.reference_no, function() {
 		cur_frm.clear_table("payment_advice_payment_terms");
-           		var tabletransfer= frappe.model.get_doc("Purchase Order", frm.doc.purchase_order)
+           		var tabletransfer= frappe.model.get_doc(frm.doc.reference_type, frm.doc.reference_no)
            		$.each(tabletransfer.payment_schedule, function(index, row){
                		var d = frm.add_child("payment_advice_payment_terms");
                		d.payment_term = row.payment_term;
@@ -69,9 +53,9 @@ frappe.ui.form.on("Payment Advice Form", {
             });
         });
 
-	frappe.model.with_doc("Purchase Order", frm.doc.purchase_order, function() {
+	frappe.model.with_doc(frm.doc.reference_type, frm.doc.reference_no, function() {
 		cur_frm.clear_table("payment_advice_taxes");
-           		var tabletransfer= frappe.model.get_doc("Purchase Order", frm.doc.purchase_order)
+           		var tabletransfer= frappe.model.get_doc(frm.doc.reference_type, frm.doc.reference_no)
            		$.each(tabletransfer.taxes, function(index, row){
                		var d = frm.add_child("payment_advice_taxes");
                		d.type = row.charge_type;
@@ -79,56 +63,16 @@ frappe.ui.form.on("Payment Advice Form", {
 			d.rate = row.rate;
 			d.amount = row.tax_amount;
 			d.total = row.total;
-               	frm.refresh_field("payment_advice_taxes");
-            });
-        });
-    }
-}
-});
-
-frappe.ui.form.on("Payment Advice Form", {
-    "purchase_invoice": function(frm) {
-	if (frm.doc.purchase_invoice){
-        frappe.model.with_doc("Purchase Invoice", frm.doc.purchase_invoice, function() {
-		cur_frm.clear_table("payment_advice_item");
-           		var tabletransfer= frappe.model.get_doc("Purchase Invoice", frm.doc.purchase_invoice)
-           		$.each(tabletransfer.items, function(index, row){
-               		var d = frm.add_child("payment_advice_item");
-               		d.item_code = row.item_code;
-			d.item_name = row.item_name;
-			d.qty = row.qty;
-			d.rate = row.rate;
-			d.amount = row.amount;
-               	frm.refresh_field("payment_advice_item");
-            });
-        });
-        
-        frappe.model.with_doc("Purchase Invoice", frm.doc.purchase_invoice, function() {
-		cur_frm.clear_table("payment_advice_payment_terms");
-           		var tabletransfer= frappe.model.get_doc("Purchase Invoice", frm.doc.purchase_invoice)
-           		$.each(tabletransfer.payment_schedule, function(index, row){
-               		var d = frm.add_child("payment_advice_payment_terms");
-               		d.payment_term = row.payment_term;
-			d.description = row.description;
-			d.due_date = row.due_date;
-			d.invoice_portion = row.invoice_portion;
-			d.payment_amount = row.payment_amount;
-			d.mode_of_payment = row.mode_of_payment;
-               	frm.refresh_field("payment_advice_payment_terms");
-            });
-        });
-
-	frappe.model.with_doc("Purchase Invoice", frm.doc.purchase_invoice, function() {
-		cur_frm.clear_table("payment_advice_taxes");
-           		var tabletransfer= frappe.model.get_doc("Purchase Invoice", frm.doc.purchase_invoice)
-           		$.each(tabletransfer.taxes, function(index, row){
-               		var d = frm.add_child("payment_advice_taxes");
-               		d.type = row.charge_type;
-			d.account_head = row.account_head;
-			d.rate = row.rate;
-			d.amount = row.tax_amount;
-			d.total = row.total;
-               	frm.refresh_field("payment_advice_taxes");
+               	frm.refresh_field("payment_advice_taxes");	
+			console.log(tabletransfer)
+			frm.set_value("party",tabletransfer.supplier)
+			frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
+			frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
+			frm.set_value("total_taxes_amount",tabletransfer.total_taxes_and_charges)
+			frm.set_value("total_amount",tabletransfer.total)
+			frm.set_value("grand_total",tabletransfer.grand_total)
+			frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
+			frm.set_value("project_site",tabletransfer.project_site)
             });
         });
     }
@@ -208,20 +152,12 @@ frappe.ui.form.on('Payment Advice Form', {
 /* ###################################################################################################################################### */
 
 frappe.ui.form.on("Payment Advice Form", "onload", function(frm) {
-    cur_frm.set_query("purchase_order", function() {
+    cur_frm.set_query("reference_no", function() {
         return {
             "filters": [
-                ["Purchase Order", "outstanding_amount", "!=", 0]
-            ]
-        };
-    });
-});
-
-frappe.ui.form.on("Payment Advice Form", "onload", function(frm) {
-    cur_frm.set_query("purchase_invoice", function() {
-        return {
-            "filters": [
-                ["Purchase Invoice", "advice_outstanding_amount", "!=", 0]
+                [frm.doc.reference_type, "advice_outstanding_amount", "!=", 0],
+		[frm.doc.reference_type, "status", "!=", "Cancelled"],
+		[frm.doc.reference_type, "status", "!=", "Draft"]
             ]
         };
     });
@@ -234,9 +170,8 @@ frappe.ui.form.on('Payment Advice Form', {
 			frm.clear_table("payment_advice_item");
 			frm.clear_table("payment_advice_payment_terms");
 			frm.clear_table("payment_advice_taxes");
-			frm.set_value("purchase_order","");
-			frm.set_value("purchase_invoice","");
 			frm.set_value("party","");
+			frm.set_value("reference_no","");
 			frm.set_value("outstanding_amount","");
 			frm.set_value("grand_total","");
 			frm.set_value("total_amount","");
@@ -244,7 +179,6 @@ frappe.ui.form.on('Payment Advice Form', {
 			frm.set_value("add_tax","");
 			frm.set_value("allocate","");
 			frm.set_value("total_taxes_amount","");
-			frm.set_value("po_date","");
 			frm.set_value("payment_terms_template","");
 			frm.set_value("purchase_taxes_and_charges_template","");
 			frm.set_value("project_site","");
@@ -252,6 +186,7 @@ frappe.ui.form.on('Payment Advice Form', {
 
 		if (frm.doc.advice_type == "Payment Advice Against PO"){
 			frm.set_value("party_type","Supplier");
+			frm.set_value("reference_type","Purchase Order");
 			frm.set_df_property("party_type","read_only",1);
 			frm.set_value("naming_series","PA/PO/.#");
 			frm.set_df_property("payment_advice_expense","hidden",1);
@@ -266,6 +201,7 @@ frappe.ui.form.on('Payment Advice Form', {
 		}
 		if (frm.doc.advice_type == "Service Order"){
 			frm.set_value("party_type","Supplier");
+			frm.set_value("reference_type","Purchase Invoice");
 			frm.set_value("naming_series","PA/SO/.#");
 			frm.set_df_property("party_type","read_only",1);
 			frm.set_df_property("payment_advice_expense","hidden",1);
@@ -287,6 +223,7 @@ frappe.ui.form.on('Payment Advice Form', {
 			frm.set_df_property("payment_advice_item","hidden",1);
 			frm.set_df_property("party_type","read_only",0);
 			frm.set_df_property("project_site","read_only",0);
+			frm.set_df_property("reference_no","hidden",1);
 			frm.set_df_property("payment_advice_expense","hidden",0);
 			frm.set_df_property("payment_terms_template","hidden",1);
 			frm.set_df_property("payment_advice_payment_terms","hidden",1);
@@ -423,3 +360,23 @@ callback:function(r){
 }
 }
 });
+
+frappe.ui.form.on("Payment Advice Form", "on_submit", function(frm, doctype, name) {
+	var outstanding_amount = frm.doc.outstanding_amount
+	var allocate_amount = frm.doc.allocate_amount
+	var diff = outstanding_amount - allocate_amount
+frappe.call({
+	"method": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.updateAmount",
+	args: {
+		reference_type: frm.doc.reference_type,
+		reference_no: frm.doc.reference_no,
+		outstanding_amount: frm.doc.outstanding_amount,
+		allocate_amount: frm.doc.allocate_amount,
+		diff : diff
+     	},
+
+	callback:function(r){
+     ;}
+});
+});
+
