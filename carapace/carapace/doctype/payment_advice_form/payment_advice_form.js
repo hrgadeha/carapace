@@ -360,23 +360,3 @@ callback:function(r){
 }
 }
 });
-
-frappe.ui.form.on("Payment Advice Form", "on_submit", function(frm, doctype, name) {
-	var outstanding_amount = frm.doc.outstanding_amount
-	var allocate_amount = frm.doc.allocate_amount
-	var diff = outstanding_amount - allocate_amount
-frappe.call({
-	"method": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.updateAmount",
-	args: {
-		reference_type: frm.doc.reference_type,
-		reference_no: frm.doc.reference_no,
-		outstanding_amount: frm.doc.outstanding_amount,
-		allocate_amount: frm.doc.allocate_amount,
-		diff : diff
-     	},
-
-	callback:function(r){
-     ;}
-});
-});
-
