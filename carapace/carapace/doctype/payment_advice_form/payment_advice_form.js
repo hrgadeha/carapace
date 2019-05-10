@@ -249,6 +249,17 @@ frappe.ui.form.on('Payment Advice Form', 'validate', function(frm) {
 
 /* ###################################################################################################################################### */
 
+frappe.ui.form.on('Payment Advice Form', 'edit_amount', function(frm) {
+	if ((frm.doc.payment_type == "Invoice Payment" || frm.doc.payment_type == "Other" || frm.doc.payment_type == "Balance Payment") && frm.doc.edit_amount == 1) {
+		frm.set_df_property("allocate_amount","read_only",0);    
+	} 
+	else{
+		frm.set_df_property("allocate_amount","read_only",1);  	
+	}
+});
+
+/* ###################################################################################################################################### */
+
 frappe.ui.form.on('Payment Advice Form', 'payment_type', function(frm) {
 	if (frm.doc.payment_type == "Adhoc Payment") {
        		frm.set_df_property("allocate_amount","read_only",0);
@@ -325,6 +336,10 @@ frappe.ui.form.on('Payment Advice Form', 'party', function(frm) {
 			frm.set_value("dr_cr","Cr");
 		}
 
+		if(r.message = 0){
+			frm.set_value("dr_cr","");
+		}
+
 		}
 	})
 });
@@ -360,3 +375,6 @@ callback:function(r){
 }
 }
 });
+
+/* ###################################################################################################################################### */
+

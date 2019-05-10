@@ -81,7 +81,8 @@ app_license = "MIT"
 
 doc_events = {
 	"Payment Advice Form": {
-		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail"
+		"validate": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Draft",
+		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Approved"
 	}
 }
 
