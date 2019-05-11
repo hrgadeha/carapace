@@ -83,6 +83,10 @@ doc_events = {
 	"Payment Advice Form": {
 		"validate": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Draft",
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Approved"
+	},
+	"Expense Claim": {
+		"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
+		"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved"
 	}
 }
 
