@@ -74,7 +74,7 @@ def sendMail_Draft(doc,method):
 		
 			section = " | "
 			subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
-			frappe.sendmail(recipients="ketan@finbridge.co.in",sender="accounts@carapaceinfra.in",subject=subject, content=content)
+			frappe.sendmail(recipients=["naveen.sharma@carapaceinfra.in","Accounts@carapaceinfra.in","ketan@finbridge.co.in"],sender="accounts@carapaceinfra.in",subject=subject, content=content)
 	
 		else:
 			content = "<h4>Hello,</h4><h2>Kind Attention : Ketan Barevadia,</h2><p>Please release the payment against Payment Advice.</p><br><h4><center><b>Payment Advice</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Party Type : "+str(doc.party_type)+"</td><td>Payment Advice : "+str(doc.name)+"</td></tr><tr><td><h3>Party : "+str(doc.party)+"</h3></td><td>Advice Date: "+str(doc.date)+"</td></tr><tr><td>Reference Type : "+str(doc.reference_type)+"</td><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Reference No : "+str(doc.reference_no)+"</td><td>Remarks : "+str(doc.remarks)+"</td></tr><tr><td>Project Site : "+str(doc.project_site)+"</td><td></td></tr><tr><td>Payment Type : "+str(doc.payment_type)+"</td><td></td></tr></table>"
@@ -94,7 +94,7 @@ def sendMail_Draft(doc,method):
 
 			section = " | "
 			subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
-			frappe.sendmail(recipients="ketan@finbridge.co.in",sender="accounts@carapaceinfra.in",subject=subject, content=content)
+			frappe.sendmail(recipients=["naveen.sharma@carapaceinfra.in","Accounts@carapaceinfra.in","ketan@finbridge.co.in"],sender="accounts@carapaceinfra.in",subject=subject, content=content)
 
 	elif doc.workflow_state == 'Approved by Manager':
 		if doc.advice_type != 'General PA':
