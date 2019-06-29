@@ -64,7 +64,7 @@ frappe.ui.form.on("Payment Advice Form", {
 			d.amount = row.tax_amount;
 			d.total = row.total;
                	frm.refresh_field("payment_advice_taxes");	
-			console.log(tabletransfer)
+			console.log(tabletransfer.budget_head)
 			frm.set_value("party",tabletransfer.supplier)
 			frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
 			frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
@@ -73,6 +73,7 @@ frappe.ui.form.on("Payment Advice Form", {
 			frm.set_value("grand_total",tabletransfer.grand_total)
 			frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
 			frm.set_value("project_site",tabletransfer.project_site)
+			frm.set_value("budget_head",tabletransfer.budget_head)
             });
         });
     }

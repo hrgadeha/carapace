@@ -87,6 +87,12 @@ doc_events = {
 	"Expense Claim": {
 		"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved"
+	},
+	"Purchase Order": {
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited"
+	},
+	"Payment Entry": {
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid"
 	}
 }
 
