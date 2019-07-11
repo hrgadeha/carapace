@@ -85,14 +85,21 @@ doc_events = {
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Approved"
 	},
 	"Expense Claim": {
-		"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
-		"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved"
+		#"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
+		#"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved"
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.expClaim"
 	},
 	"Purchase Order": {
-		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited"
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited_cancel"
+	},
+	"Purchase Invoice": {
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited_cancel"
 	},
 	"Payment Entry": {
-		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid"
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid_cancel"
 	}
 }
 

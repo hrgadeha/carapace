@@ -16,6 +16,6 @@ def get_column():
 def get_silo(filters):
 	if filters.get("project"):
 		project = filters.get("project")
-		budget_head = frappe.db.sql(""" select head,budget,committed,incurred,yet_to_be_committed,yet_to_be_incurred from `tabBudget Head` where project = '%s'; """%(project), as_list=1)
+		budget_head = frappe.db.sql(""" select head_name,budget,committed,incurred,yet_to_be_committed,yet_to_be_incurred from `tabBudget Head` where project = '%s'; """%(project), as_list=1)
 
 		return budget_head
