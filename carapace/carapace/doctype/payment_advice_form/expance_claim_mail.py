@@ -37,6 +37,10 @@ def sendMail_Approved(doc,method):
 	content = content + "<h4><b>Expense Details</b></h4><table class='table table-bordered'><tr><th>Expense Date</th><th>Expense Claim Type</th><th>Description</th><th>Claim Amount</th><th>Sanctioned Amount</th></tr>"
 
 	for item in doc.expenses:
+		exp = frappe.get_doc("Budget Head",item.budget_head)
+		exp.committed += item.sanctioned_amount
+		exp.incurred += item.sanctioned_amount
+		exp.save()
 		expense_date = item.expense_date
 		expense_type = item.expense_type
 		description = item.description

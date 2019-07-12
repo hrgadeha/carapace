@@ -85,9 +85,9 @@ doc_events = {
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Approved"
 	},
 	"Expense Claim": {
-		#"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
-		#"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved"
-		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.expClaim"
+		"validate": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Draft",
+		"on_submit": "carapace.carapace.doctype.payment_advice_form.expance_claim_mail.sendMail_Approved",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.expClaim"
 	},
 	"Purchase Order": {
 		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited",

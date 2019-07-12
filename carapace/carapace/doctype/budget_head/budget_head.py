@@ -42,6 +42,6 @@ def UpdatePaid_cancel(doc,method):
 def expClaim(doc,method):
 	for d in doc.expenses:
 		exp = frappe.get_doc("Budget Head",d.budget_head)
-		exp.committed += d.sanctioned_amount
-		exp.incurred += d.sanctioned_amount
+		exp.committed -= d.sanctioned_amount
+		exp.incurred -= d.sanctioned_amount
 		exp.save()
