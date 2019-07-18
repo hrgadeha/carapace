@@ -90,8 +90,8 @@ doc_events = {
 		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.expClaim"
 	},
 	"Purchase Order": {
-		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited",
-		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited_cancel"
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommitedPO",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited_cancelPO"
 	},
 	"Purchase Invoice": {
 		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited",

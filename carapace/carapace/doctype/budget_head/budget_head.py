@@ -12,18 +12,34 @@ class BudgetHead(Document):
 		self.name = make_autoname(self.project + '-' + self.head_name + '-')
 
 @frappe.whitelist(allow_guest=True)
-def UpdateCommited(doc,method):
+def UpdateCommitedPO(doc,method):
 	doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
 	doc_BH.committed += doc.grand_total
 	doc_BH.yet_to_be_committed = doc_BH.budget - doc_BH.committed
 	doc_BH.save()
 
 @frappe.whitelist(allow_guest=True)
-def UpdateCommited_cancel(doc,method):
+def UpdateCommited_cancelPO(doc,method):
 	doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
 	doc_BH.committed -= doc.grand_total
 	doc_BH.yet_to_be_committed = doc_BH.budget + doc_BH.committed
 	doc_BH.save()
+
+@frappe.whitelist(allow_guest=True)
+def UpdateCommited(doc,method):
+	if doc.update_budget_head == 1:
+		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
+		doc_BH.committed += doc.grand_total - doc.committed_amount
+		doc_BH.yet_to_be_committed = doc_BH.budget - doc_BH.committed
+		doc_BH.save()
+
+@frappe.whitelist(allow_guest=True)
+def UpdateCommited_cancel(doc,method):
+	if doc.update_budget_head == 1:
+		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
+		doc_BH.committed -= doc.grand_total - doc.committed_amount
+		doc_BH.yet_to_be_committed = doc_BH.budget + doc_BH.committed
+		doc_BH.save()
 
 @frappe.whitelist(allow_guest=True)
 def UpdatePaid(doc,method):
