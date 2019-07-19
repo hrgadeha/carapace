@@ -11,7 +11,7 @@ from frappe.model.document import Document
 @frappe.whitelist(allow_guest=True)
 def sendMail_Draft(doc,method):
 	if doc.workflow_state == 'Applied':
-		content = "<h4>Hello,</h4><h2>Kind Attention : Naveen Sharma,</h2><p>Please release the payment against Expense Claim.</p><br><h4><center><b>Expense Claim</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Employee Name : "+str(doc.employee_name)+"</td></tr><tr><td>Department : "+str(doc.department)+"</td></tr><tr><td>Expense Approver : "+str(doc.expense_approver)+"</td></tr><tr><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Date : "+str(doc.posting_date)+"</td></tr><tr><td>Remark : "+str(doc.remark)+"</td></tr></table>"
+		content = "<h4>Hello,</h4><h2>Kind Attention : Accountant,</h2><p>Please release the payment against Expense Claim.</p><br><h4><center><b>Expense Claim</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Employee Name : "+str(doc.employee_name)+"</td></tr><tr><td>Department : "+str(doc.department)+"</td></tr><tr><td>Expense Approver : "+str(doc.expense_approver)+"</td></tr><tr><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Date : "+str(doc.posting_date)+"</td></tr><tr><td>Remark : "+str(doc.remark)+"</td></tr></table>"
 
 		content = content + "<h4><b>Expense Details</b></h4><table class='table table-bordered'><tr><th>Expense Date</th><th>Expense Claim Type</th><th>Description</th><th>Claim Amount</th><th>Sanctioned Amount</th></tr>"
 
@@ -30,7 +30,7 @@ def sendMail_Draft(doc,method):
 		frappe.sendmail(recipients="accounts@carapaceinfra.in",sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
 
 	if doc.workflow_state == 'Created by Employee':
-		content = "<h4>Hello,</h4><h2>Kind Attention : Naveen Sharma,</h2><p>Please release the payment against Expense Claim.</p><br><h4><center><b>Expense Claim</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Employee Name : "+str(doc.employee_name)+"</td></tr><tr><td>Department : "+str(doc.department)+"</td></tr><tr><td>Expense Approver : "+str(doc.expense_approver)+"</td></tr><tr><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Date : "+str(doc.posting_date)+"</td></tr><tr><td>Remark : "+str(doc.remark)+"</td></tr></table>"
+		content = "<h4>Hello,</h4><h2>Kind Attention : Account manager,</h2><p>Please release the payment against Expense Claim.</p><br><h4><center><b>Expense Claim</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Employee Name : "+str(doc.employee_name)+"</td></tr><tr><td>Department : "+str(doc.department)+"</td></tr><tr><td>Expense Approver : "+str(doc.expense_approver)+"</td></tr><tr><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Date : "+str(doc.posting_date)+"</td></tr><tr><td>Remark : "+str(doc.remark)+"</td></tr></table>"
 
 		content = content + "<h4><b>Expense Details</b></h4><table class='table table-bordered'><tr><th>Expense Date</th><th>Expense Claim Type</th><th>Description</th><th>Claim Amount</th><th>Sanctioned Amount</th></tr>"
 
