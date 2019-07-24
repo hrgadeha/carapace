@@ -35,9 +35,18 @@ frappe.ui.form.on("Payment Advice Form", {
 			d.rate = row.rate;
 			d.amount = row.amount;
                	frm.refresh_field("payment_advice_item");
+			frm.set_value("party",tabletransfer.supplier)
+                        frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
+                        frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
+                        frm.set_value("total_taxes_amount",tabletransfer.total_taxes_and_charges)
+                        frm.set_value("total_amount",tabletransfer.total)
+                        frm.set_value("grand_total",tabletransfer.grand_total)
+                        frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
+                        frm.set_value("project_site",tabletransfer.project_site)
+                        frm.set_value("budget_head",tabletransfer.budget_head)
             });
         });
-        
+
         frappe.model.with_doc(frm.doc.reference_type, frm.doc.reference_no, function() {
 		cur_frm.clear_table("payment_advice_payment_terms");
            		var tabletransfer= frappe.model.get_doc(frm.doc.reference_type, frm.doc.reference_no)
@@ -63,17 +72,7 @@ frappe.ui.form.on("Payment Advice Form", {
 			d.rate = row.rate;
 			d.amount = row.tax_amount;
 			d.total = row.total;
-               	frm.refresh_field("payment_advice_taxes");	
-			console.log(tabletransfer.budget_head)
-			frm.set_value("party",tabletransfer.supplier)
-			frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
-			frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
-			frm.set_value("total_taxes_amount",tabletransfer.total_taxes_and_charges)
-			frm.set_value("total_amount",tabletransfer.total)
-			frm.set_value("grand_total",tabletransfer.grand_total)
-			frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
-			frm.set_value("project_site",tabletransfer.project_site)
-			frm.set_value("budget_head",tabletransfer.budget_head)
+               	frm.refresh_field("payment_advice_taxes");
             });
         });
     }
@@ -91,7 +90,7 @@ frappe.ui.form.on("Payment Advice Payment Terms", "add", function(frm, cdt, cdn)
 		percent = percent + pterms[j].invoice_portion
 	}
 	}
-	
+
 	frm.set_value("payment_percent",percent);
 });
 
@@ -105,7 +104,7 @@ frappe.ui.form.on("Payment Advice Taxes", "add", function(frm, cdt, cdn){
 		amount = amount + ptax[j].amount
 	}
 	}
-	
+
 	frm.set_value("total_allocate_tax",amount);
 });
 
@@ -123,7 +122,7 @@ frappe.ui.form.on('Payment Advice Form', {
 		if(frm.doc.allocate == 1){
 				frm.set_value("allocate_amount",pay);
 		}
-		
+
 		if(frm.doc.allocate == 0){
 				frm.set_value("allocate_amount",0);
 		}
@@ -138,12 +137,12 @@ frappe.ui.form.on('Payment Advice Form', {
 			var pay = 0.0;
 
 			pay = total * (percent/100)
-			
+
 		if(frm.doc.allocate == 1 && frm.doc.add_tax == 1){
 			total_with_tax = tax + pay;
 			frm.set_value("allocate_amount",total_with_tax);
 		}
-		
+
 		if(frm.doc.add_tax == 0){
 			frm.set_value("allocate_amount",pay);
 		}
@@ -245,17 +244,17 @@ frappe.ui.form.on('Payment Advice Form', 'validate', function(frm) {
     if (frm.doc.advice_type == "Payment Advice Against PO" && frm.doc.allocate_amount > frm.doc.outstanding_amount) {
         msgprint('Allocate Amount Can Not Be Breater Than Outstanding Amount');
         validated = false;
-    } 
+    }
 });
 
 /* ###################################################################################################################################### */
 
 frappe.ui.form.on('Payment Advice Form', 'edit_amount', function(frm) {
 	if ((frm.doc.payment_type == "Invoice Payment" || frm.doc.payment_type == "Other" || frm.doc.payment_type == "Balance Payment") && frm.doc.edit_amount == 1) {
-		frm.set_df_property("allocate_amount","read_only",0);    
-	} 
+		frm.set_df_property("allocate_amount","read_only",0);
+	}
 	else{
-		frm.set_df_property("allocate_amount","read_only",1);  	
+		frm.set_df_property("allocate_amount","read_only",1);
 	}
 });
 
@@ -286,7 +285,7 @@ frappe.ui.form.on("Payment Advice Expense", "qty", function(frm, cdt, cdn){
    	for(var j in expense) {
 		total = total + expense[j].total;
 		frm.set_value("allocate_amount",total);
-	}	
+	}
 });
 
 frappe.ui.form.on("Payment Advice Expense", "rate", function(frm, cdt, cdn){
@@ -299,7 +298,7 @@ frappe.ui.form.on("Payment Advice Expense", "rate", function(frm, cdt, cdn){
    	for(var j in expense) {
 		total = total + expense[j].total;
 		frm.set_value("allocate_amount",total);
-	}	
+	}
 });
 
 frappe.ui.form.on("Payment Advice Expense", "payment_advice_expense_remove", function(frm, cdt, cdn){
@@ -309,7 +308,7 @@ frappe.ui.form.on("Payment Advice Expense", "payment_advice_expense_remove", fun
    	for(var j in expense) {
 		total = total + expense[j].total;
 		frm.set_value("allocate_amount",total);
-	}	
+	}
 	cur_frm.refresh();
 	cur_frm.refresh_fields();
 });
@@ -320,15 +319,15 @@ frappe.ui.form.on('Payment Advice Form', 'party', function(frm) {
 	return frappe.call({
 		method: "erpnext.accounts.utils.get_balance_on",
 		args: {
-			date: frm.doc.date, 
-			party_type: frm.doc.party_type, 
+			date: frm.doc.date,
+			party_type: frm.doc.party_type,
 			party: frm.doc.party
 		},
-		
+
 		callback: function(r) {
 			frm.doc.account_balance = r.message;
 			refresh_field('account_balance', 'accounts');
-		
+
 		if(r.message > 0){
 			frm.set_value("dr_cr","Dr");
 		}
@@ -353,7 +352,7 @@ frappe.ui.form.on("Payment Advice Form", {
 	cur_frm.refresh();
 	cur_frm.clear_table("payment_advice_details");
 	cur_frm.refresh_fields();
-	
+
     frappe.call({
     "method": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.getPA",
 args: {
