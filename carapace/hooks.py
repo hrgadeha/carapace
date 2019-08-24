@@ -107,8 +107,7 @@ doc_events = {
 	},
 	"Salary Slip": {
                 "on_submit": "carapace.carapace.doctype.budget_head.budget_head.createSS",
-                "on_cancel": "carapace.carapace.doctype.budget_head.budget_head.cancelSS",
-		"after_insert": "carapace.carapace.doctype.budget_head.budget_head.insertSS"
+                "on_cancel": "carapace.carapace.doctype.budget_head.budget_head.cancelSS"
         }
 }
 

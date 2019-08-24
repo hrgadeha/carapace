@@ -119,10 +119,3 @@ def cancelSS(doc,method):
                         exp.committed -= bh.amount
                         exp.yet_to_be_committed = exp.budget + exp.committed
                         exp.save()
-
-@frappe.whitelist(allow_guest=True)
-def insertSS(doc,method):
-        for bh in doc.project_and_budget_allocation:
-                bh.project = "FINAL TEST PROJECT N-001"
-		bh.budget_head = "Salary & Wages-FINAL TEST PROJECT N-001-00001"
-		bh.percent = 100
