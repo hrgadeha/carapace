@@ -44,6 +44,7 @@ frappe.ui.form.on("Payment Advice Form", {
                         frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
                         frm.set_value("project_site",tabletransfer.project_site)
                         frm.set_value("budget_head",tabletransfer.budget_head)
+			frm.set_value("total",tabletransfer.total)
             });
         });
 

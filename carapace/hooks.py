@@ -100,8 +100,41 @@ doc_events = {
 	"Payment Entry": {
 		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid",
 		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdatePaid_cancel"
-	}
+	},
+	"Journal Entry": {
+		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.jvBudget",
+		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.jvBudget_cancel"
+	},
+	"Salary Slip": {
+                "on_submit": "carapace.carapace.doctype.budget_head.budget_head.createSS",
+                "on_cancel": "carapace.carapace.doctype.budget_head.budget_head.cancelSS",
+		"after_insert": "carapace.carapace.doctype.budget_head.budget_head.insertSS"
+        }
 }
+
+
+fixtures = [
+    {
+	"doctype": "Custom Script",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                        "Payment Entry-Client",
+			"Salary Slip-Client",
+			"Employee-Client",
+			"Purchase Invoice-Client",
+			"Journal Entry-Client",
+			"Purchase Order-Client",
+			"Purchase Receipt-Client",
+			"Expense Claim-Client",
+                ]
+            ]
+        ]
+ }
+]
+
 
 # Scheduled Tasks
 # ---------------

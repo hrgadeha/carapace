@@ -19,11 +19,11 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = '{:20,.2f}'.format(item.claim_amount)
-			sanctioned_amount = '{:20,.2f}'.format(item.sanctioned_amount)
+			claim_amount = item.claim_amount
+			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
-		content = content + "</table>"		
+		content = content + "</table>"
 		content = content + "<br><table class='table table-bordered'><tr><td>Total Claimed Amount : "+str('{:20,.2f}'.format(doc.total_claimed_amount))+"</td><td>Total Sanctioned Amount : "+str(doc.total_sanctioned_amount)+"</td></tr></table></table>"
 		section = " | "
 		subject = str(doc.name) + section + str(doc.employee_name) + section + str('{:20,.2f}'.format(doc.total_claimed_amount))
@@ -38,11 +38,11 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = '{:20,.2f}'.format(item.claim_amount)
-			sanctioned_amount = '{:20,.2f}'.format(item.sanctioned_amount)
+			claim_amount = item.claim_amount
+			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
-		content = content + "</table>"		
+		content = content + "</table>"
 		content = content + "<br><table class='table table-bordered'><tr><td>Total Claimed Amount : "+str('{:20,.2f}'.format(doc.total_claimed_amount))+"</td><td>Total Sanctioned Amount : "+str(doc.total_sanctioned_amount)+"</td></tr></table></table>"
 		section = " | "
 		subject = str(doc.name) + section + str(doc.employee_name) + section + str('{:20,.2f}'.format(doc.total_claimed_amount))
@@ -57,11 +57,11 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = '{:20,.2f}'.format(item.claim_amount)
-			sanctioned_amount = '{:20,.2f}'.format(item.sanctioned_amount)
+			claim_amount = item.claim_amount
+			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
-		content = content + "</table>"		
+		content = content + "</table>"
 		content = content + "<br><table class='table table-bordered'><tr><td>Total Claimed Amount : "+str('{:20,.2f}'.format(doc.total_claimed_amount))+"</td><td>Total Sanctioned Amount : "+str(doc.total_sanctioned_amount)+"</td></tr></table></table>"
 		section = " | "
 		subject = str(doc.name) + section + str(doc.employee_name) + section + str('{:20,.2f}'.format(doc.total_claimed_amount))
@@ -75,18 +75,19 @@ def sendMail_Approved(doc,method):
 	content = content + "<h4><b>Expense Details</b></h4><table class='table table-bordered'><tr><th>Expense Date</th><th>Expense Claim Type</th><th>Description</th><th>Claim Amount</th><th>Sanctioned Amount</th></tr>"
 
 	for item in doc.expenses:
-		exp = frappe.get_doc("Budget Head",item.budget_head)
-		exp.committed += item.sanctioned_amount
-		exp.incurred += item.sanctioned_amount
-		exp.save()
+		if item.budget_head:
+			exp = frappe.get_doc("Budget Head",item.budget_head)
+			exp.committed += item.sanctioned_amount
+			exp.incurred += item.sanctioned_amount
+			exp.save()
 		expense_date = item.expense_date
 		expense_type = item.expense_type
 		description = item.description
-		claim_amount = '{:20,.2f}'.format(item.claim_amount)
-		sanctioned_amount = '{:20,.2f}'.format(item.sanctioned_amount)
+		claim_amount = item.claim_amount
+		sanctioned_amount = item.sanctioned_amount
 		content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
-	content = content + "</table>"		
+	content = content + "</table>"
 	content = content + "<br><table class='table table-bordered'><tr><td>Total Claimed Amount : "+str('{:20,.2f}'.format(doc.total_claimed_amount))+"</td><td>Total Sanctioned Amount : "+str(doc.total_sanctioned_amount)+"</td></tr></table></table>"
 	section = " | "
 	subject = str(doc.name) + section + str(doc.employee_name) + section + str('{:20,.2f}'.format(doc.total_claimed_amount))
