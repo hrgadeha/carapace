@@ -9,6 +9,12 @@ frappe.query_reports["Project Wise budget"] = {
        		    "label": __("Select Project"),
         	    "fieldtype": "Link",
 		    "options": "Project"
-        	}
+        	},
+		{
+                    "fieldname": "head",
+                    "label": __("Select Head"),
+                    "fieldtype": "Link",
+                    "options": "Head"
+                }
 	]
 }

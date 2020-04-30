@@ -29,18 +29,19 @@ frappe.ui.form.on("Payment Advice Form", {
            		var tabletransfer= frappe.model.get_doc(frm.doc.reference_type, frm.doc.reference_no)
            		$.each(tabletransfer.items, function(index, row){
                		var d = frm.add_child("payment_advice_item");
+			d.name1 = row.name;
                		d.item_code = row.item_code;
 			d.item_name = row.item_name;
-			d.qty = row.qty;
-			d.rate = row.rate;
-			d.amount = row.amount;
+			d.qty = (row.qty - row.pa_qty);
+			d.rate = row.net_rate;
+			d.amount = (d.qty * d.rate);
                	frm.refresh_field("payment_advice_item");
 			frm.set_value("party",tabletransfer.supplier)
                         frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
                         frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
                         frm.set_value("total_taxes_amount",tabletransfer.total_taxes_and_charges)
-                        frm.set_value("total_amount",tabletransfer.total)
-                        frm.set_value("grand_total",tabletransfer.grand_total)
+                        frm.set_value("total_amount",tabletransfer.advise_total)
+                        frm.set_value("grand_total",tabletransfer.advise_grand_total)
                         frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
                         frm.set_value("project_site",tabletransfer.project_site)
                         frm.set_value("budget_head",tabletransfer.budget_head)
@@ -100,13 +101,16 @@ frappe.ui.form.on("Payment Advice Payment Terms", "add", function(frm, cdt, cdn)
 frappe.ui.form.on("Payment Advice Taxes", "add", function(frm, cdt, cdn){
 	var ptax = frm.doc.payment_advice_taxes;
   	var amount = 0;
+	var tax = 0;
    	for(var j in ptax) {
 		if(ptax[j].add == 1){
 		amount = amount + ptax[j].amount
+		tax = tax + ptax[j].rate
 	}
 	}
 
 	frm.set_value("total_allocate_tax",amount);
+	frm.set_value("tax",tax);
 });
 
 /* ###################################################################################################################################### */
@@ -141,7 +145,7 @@ frappe.ui.form.on('Payment Advice Form', {
 
 		if(frm.doc.allocate == 1 && frm.doc.add_tax == 1){
 			total_with_tax = tax + pay;
-			frm.set_value("allocate_amount",total_with_tax);
+			frm.set_value("allocate_amount", total_with_tax);
 		}
 
 		if(frm.doc.add_tax == 0){
@@ -242,8 +246,9 @@ frappe.ui.form.on('Payment Advice Form', {
 /* ###################################################################################################################################### */
 
 frappe.ui.form.on('Payment Advice Form', 'validate', function(frm) {
-    if (frm.doc.advice_type == "Payment Advice Against PO" && frm.doc.allocate_amount > frm.doc.outstanding_amount) {
-        msgprint('Allocate Amount Can Not Be Breater Than Outstanding Amount');
+	var d = frm.doc.outstanding_amount + 0.5;
+    if (frm.doc.advice_type == "Payment Advice Against PO" && frm.doc.allocate_amount > d) {
+        msgprint('Allocate Amount Can Not Be Greater Than Outstanding Amount');
         validated = false;
     }
 });

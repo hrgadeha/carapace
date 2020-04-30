@@ -12,7 +12,19 @@ class BudgetHead(Document):
 		self.name = make_autoname(self.head_name + '-' + self.project + '-')
 
 @frappe.whitelist(allow_guest=True)
+def UpdateSI(doc,method):
+        doc.confirmed_by = frappe.session.user
+        doc.save()
+
+@frappe.whitelist(allow_guest=True)
+def UpdateQTN(doc,method):
+        doc.confirmed_by = frappe.session.user
+        doc.save()
+
+@frappe.whitelist(allow_guest=True)
 def UpdateCommitedPO(doc,method):
+	doc.confirmed_by = frappe.session.user
+	doc.save()
 	if doc.budget_head:
 		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
 		doc_BH.committed += doc.total
@@ -119,3 +131,44 @@ def cancelSS(doc,method):
                         exp.committed -= bh.amount
                         exp.yet_to_be_committed = exp.budget + exp.committed
                         exp.save()
+
+
+@frappe.whitelist(allow_guest=True)
+def getPO(doctype, budget_head):
+	query="select name,transaction_date,total from `tabPurchase Order` where docstatus = 1 and budget_head = '"+str(budget_head)+"';"
+	li=[]
+	dic=frappe.db.sql(query, as_dict=True)
+	for i in dic:
+		name,transaction_date,total=i['name'],i['transaction_date'],i['total']
+		li.append([name,transaction_date,total])
+	return li
+
+@frappe.whitelist(allow_guest=True)
+def getPI(doctype, budget_head):
+        query="select pitem.parent,pi.posting_date,pitem.amount from `tabPurchase Invoice` pi, `tabPurchase Invoice Item` pitem where pi.docstatus = 1 and pi.name = pitem.parent and pitem.budget_head = '"+str(budget_head)+"';"
+        li=[]
+        dic=frappe.db.sql(query, as_dict=True)
+        for i in dic:
+                parent,posting_date,amount=i['parent'],i['posting_date'],i['amount']
+                li.append([parent,posting_date,amount])
+        return li
+
+@frappe.whitelist(allow_guest=True)
+def getExp(doctype, budget_head):
+        query="select ecd.parent,ecd.expense_date,ecd.amount from `tabExpense Claim` ec, `tabExpense Claim Detail` ecd where ec.docstatus = 1 and ec.name = ecd.parent and ecd.budget_head = '"+str(budget_head)+"';"
+        li=[]
+        dic=frappe.db.sql(query, as_dict=True)
+        for i in dic:
+                parent,expense_date,amount=i['parent'],i['expense_date'],i['amount']
+                li.append([parent,expense_date,amount])
+        return li
+
+@frappe.whitelist(allow_guest=True)
+def getSLP(doctype, budget_head):
+        query="select ecd.parent,ec.posting_date,ecd.amount from `tabSalary Slip` ec, `tabProject And Budget Allocation` ecd where ec.docstatus = 1 and ec.name = ecd.parent and ecd.budget_head = '"+str(budget_head)+"';"
+        li=[]
+        dic=frappe.db.sql(query, as_dict=True)
+        for i in dic:
+                parent,posting_date,amount=i['parent'],i['posting_date'],i['amount']
+                li.append([parent,posting_date,amount])
+        return li

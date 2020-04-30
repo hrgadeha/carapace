@@ -81,7 +81,7 @@ app_license = "MIT"
 
 doc_events = {
 	"Payment Advice Form": {
-		"validate": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Draft",
+#		"validate": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Draft",
 		"on_submit": "carapace.carapace.doctype.payment_advice_form.payment_advice_form.sendMail_Approved"
 	},
 	"Expense Claim": {
@@ -108,6 +108,19 @@ doc_events = {
 	"Salary Slip": {
                 "on_submit": "carapace.carapace.doctype.budget_head.budget_head.createSS",
                 "on_cancel": "carapace.carapace.doctype.budget_head.budget_head.cancelSS"
+        },
+	"Gate Entry": {
+		"on_submit": "carapace.carapace.doctype.gate_entry.gate_entry.UpdatePO",
+                "on_cancel": "carapace.carapace.doctype.gate_entry.gate_entry.canPO"
+        },
+#	"Project": {
+ #               "after_insert": "carapace.carapace.doctype.gate_entry.gate_entry.createPS"
+  #      },
+	"Sales Invoice": {
+                "on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateSI"
+        },
+	"Quotation": {
+                "on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateQTN"
         }
 }
 

@@ -19,7 +19,7 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = item.claim_amount
+			claim_amount = item.amount
 			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
@@ -38,7 +38,7 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = item.claim_amount
+			claim_amount = item.amount
 			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
@@ -57,7 +57,7 @@ def sendMail_Draft(doc,method):
 			expense_date = item.expense_date
 			expense_type = item.expense_type
 			description = item.description
-			claim_amount = item.claim_amount
+			claim_amount = item.amount
 			sanctioned_amount = item.sanctioned_amount
 			content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 
@@ -83,7 +83,7 @@ def sendMail_Approved(doc,method):
 		expense_date = item.expense_date
 		expense_type = item.expense_type
 		description = item.description
-		claim_amount = item.claim_amount
+		claim_amount = item.amount
 		sanctioned_amount = item.sanctioned_amount
 		content = content + "<tr><td>"+str(expense_date)+"</td><td>"+str(expense_type)+"</td><td>"+str(description)+"</td><td>"+str(claim_amount)+"</td><td>"+str(sanctioned_amount)+"</td></tr>"
 

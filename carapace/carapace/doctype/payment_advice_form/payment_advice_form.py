@@ -7,7 +7,22 @@ import frappe
 from frappe.model.document import Document
 
 class PaymentAdviceForm(Document):
-	pass
+	def on_submit(doc):
+		if doc.reference_type == "Purchase Order" and doc.reference_no:
+			for d in doc.payment_advice_item:
+				sv = frappe.get_doc("Purchase Order Item",d.name1)
+				sv.pa_qty = sv.pa_qty + d.qty
+				sv.save()
+			po = frappe.get_doc("Purchase Order",doc.reference_no)
+			po.advise_total = po.advise_total - doc.total
+			po.advise_grand_total = po.advise_total + doc.total_taxes_amount
+			po.save()
+
+
+#	def before_cancel(doc):
+#		doc.status = "Closed"
+#		doc.save()
+
 
 @frappe.whitelist(allow_guest=True)
 def insert_data(doctype, payment_advice):
@@ -71,11 +86,10 @@ def sendMail_Draft(doc,method):
 				content = content + "<tr><td>"+str(type)+"</td><td>"+str(account_head)+"</td><td>"+str(rate)+" %</td><td>"+str(amount)+"</td><td>"+str(total)+"</td></tr>"
 			content = content + "</table>"
 			content = content + "<br><table class='table table-bordered'><tr><td>Total Amount : "+str('{:20,.2f}'.format(doc.total_amount))+"</td><td>Payment Percent : "+str(doc.payment_percent)+" %</td></tr><tr><td>Total Taxes Amount : "+str('{:20,.2f}'.format(doc.total_taxes_amount))+"</td><td><h3>To Pay: "+str('{:20,.2f}'.format(doc.allocate_amount))+"</h3></td></tr><tr><td>Total Allocate Tax : "+str('{:20,.2f}'.format(doc.total_allocate_tax))+"</td><td>Account Balance : "+str('{:20,.2f}'.format(doc.account_balance))+" "+str(doc.dr_cr)+"</td></tr><tr><td>Grand Total : "+str('{:20,.2f}'.format(doc.grand_total))+"</td><td></td></tr><tr><td>Outstanding Amount : "+str('{:20,.2f}'.format(doc.outstanding_amount))+"</td><td></td></tr></table></table>"
-		
+
 			section = " | "
 			subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
 			frappe.sendmail(recipients=["naveen.sharma@carapaceinfra.in","Accounts@carapaceinfra.in","ketan@finbridge.co.in"],sender="accounts@carapaceinfra.in",subject=subject, content=content)
-	
 		else:
 			content = "<h4>Hello,</h4><h2>Kind Attention : Ketan Barevadia,</h2><p>Please release the payment against Payment Advice.</p><br><h4><center><b>Payment Advice</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Party Type : "+str(doc.party_type)+"</td><td>Payment Advice : "+str(doc.name)+"</td></tr><tr><td><h3>Party : "+str(doc.party)+"</h3></td><td>Advice Date: "+str(doc.date)+"</td></tr><tr><td>Reference Type : "+str(doc.reference_type)+"</td><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Reference No : "+str(doc.reference_no)+"</td><td>Remarks : "+str(doc.remarks)+"</td></tr><tr><td>Project Site : "+str(doc.project_site)+"</td><td></td></tr><tr><td>Payment Type : "+str(doc.payment_type)+"</td><td></td></tr></table>"
 
@@ -129,11 +143,11 @@ def sendMail_Draft(doc,method):
 				content = content + "<tr><td>"+str(type)+"</td><td>"+str(account_head)+"</td><td>"+str(rate)+" %</td><td>"+str(amount)+"</td><td>"+str(total)+"</td></tr>"
 			content = content + "</table>"
 			content = content + "<br><table class='table table-bordered'><tr><td>Total Amount : "+str('{:20,.2f}'.format(doc.total_amount))+"</td><td>Payment Percent : "+str(doc.payment_percent)+" %</td></tr><tr><td>Total Taxes Amount : "+str('{:20,.2f}'.format(doc.total_taxes_amount))+"</td><td><h3>To Pay: "+str('{:20,.2f}'.format(doc.allocate_amount))+"</h3></td></tr><tr><td>Total Allocate Tax : "+str('{:20,.2f}'.format(doc.total_allocate_tax))+"</td><td>Account Balance : "+str('{:20,.2f}'.format(doc.account_balance))+" "+str(doc.dr_cr)+"</td></tr><tr><td>Grand Total : "+str('{:20,.2f}'.format(doc.grand_total))+"</td><td></td></tr><tr><td>Outstanding Amount : "+str('{:20,.2f}'.format(doc.outstanding_amount))+"</td><td></td></tr></table></table>"
-		
+
 			section = " | "
 			subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
 			frappe.sendmail(recipients="naveen.sharma@carapaceinfra.in",sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
-	
+
 		else:
 			content = "<h4>Hello,</h4><h2>Kind Attention : Naveen Sharma,</h2><p>Please release the payment against Payment Advice.</p><br><h4><center><b>Payment Advice</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Party Type : "+str(doc.party_type)+"</td><td>Payment Advice : "+str(doc.name)+"</td></tr><tr><td><h3>Party : "+str(doc.party)+"</h3></td><td>Advice Date: "+str(doc.date)+"</td></tr><tr><td>Reference Type : "+str(doc.reference_type)+"</td><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Reference No : "+str(doc.reference_no)+"</td><td>Remarks : "+str(doc.remarks)+"</td></tr><tr><td>Project Site : "+str(doc.project_site)+"</td><td></td></tr><tr><td>Payment Type : "+str(doc.payment_type)+"</td><td></td></tr></table>"
 
@@ -192,11 +206,11 @@ def sendMail_Approved(doc,method):
 			content = content + "<tr><td>"+str(type)+"</td><td>"+str(account_head)+"</td><td>"+str(rate)+" %</td><td>"+str(amount)+"</td><td>"+str(total)+"</td></tr>"
 		content = content + "</table>"
 		content = content + "<br><table class='table table-bordered'><tr><td>Total Amount : "+str('{:20,.2f}'.format(doc.total_amount))+"</td><td>Payment Percent : "+str(doc.payment_percent)+" %</td></tr><tr><td>Total Taxes Amount : "+str('{:20,.2f}'.format(doc.total_taxes_amount))+"</td><td><h3>To Pay: "+str('{:20,.2f}'.format(doc.allocate_amount))+"</h3></td></tr><tr><td>Total Allocate Tax : "+str('{:20,.2f}'.format(doc.total_allocate_tax))+"</td><td>Account Balance : "+str('{:20,.2f}'.format(doc.account_balance))+" "+str(doc.dr_cr)+"</td></tr><tr><td>Grand Total : "+str('{:20,.2f}'.format(doc.grand_total))+"</td><td></td></tr><tr><td>Outstanding Amount : "+str('{:20,.2f}'.format(doc.outstanding_amount))+"</td><td></td></tr></table></table>"
-		
+
 		section = " | "
 		subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
-		frappe.sendmail(recipients=["Souvik.das@carapaceinfra.in","vivek.sharma@carapaceinfra.in","naveen.sharma@carapaceinfra.in","rinu.kori@carapaceinfra.com","Accounts@carapaceinfra.in","sandeep.saluja@carapaceinfra.in","ketan@finbridge.co.in"],sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
-	
+		frappe.sendmail(recipients=["Souvik.das@carapaceinfra.in","vivek.sharma@carapaceinfra.in","naveen.sharma@carapaceinfra.in","Accounts@carapaceinfra.in","ketan@finbridge.co.in"],sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
+
 	else:
 		content = "<h4>Hello,</h4><h2>Kind Attention : Mr. Souvik Das / Mr. Vivek Sharma,</h2><p>Please release the payment against Payment Advice.</p><br><h4><center><b>Payment Advice</b></center></h4><table class='table table-bordered'><table class='table table-bordered'><tr><td>Party Type : "+str(doc.party_type)+"</td><td>Payment Advice : "+str(doc.name)+"</td></tr><tr><td><h3>Party : "+str(doc.party)+"</h3></td><td>Advice Date: "+str(doc.date)+"</td></tr><tr><td>Reference Type : "+str(doc.reference_type)+"</td><td>Status : "+str(doc.workflow_state)+"</td></tr><tr><td>Reference No : "+str(doc.reference_no)+"</td><td>Remarks : "+str(doc.remarks)+"</td></tr><tr><td>Project Site : "+str(doc.project_site)+"</td><td></td></tr><tr><td>Payment Type : "+str(doc.payment_type)+"</td><td></td></tr></table>"
 
@@ -215,4 +229,4 @@ def sendMail_Approved(doc,method):
 
 		section = " | "
 		subject = str(doc.name) + section + str(doc.party) + section + str('{:20,.2f}'.format(doc.allocate_amount)) + section + str(doc.project_site)
-		frappe.sendmail(recipients=["Souvik.das@carapaceinfra.in","vivek.sharma@carapaceinfra.in","naveen.sharma@carapaceinfra.in","rinu.kori@carapaceinfra.com","Accounts@carapaceinfra.in","sandeep.saluja@carapaceinfra.in","ketan@finbridge.co.in"],sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
+		frappe.sendmail(recipients=["Souvik.das@carapaceinfra.in","vivek.sharma@carapaceinfra.in","naveen.sharma@carapaceinfra.in","Accounts@carapaceinfra.in","ketan@finbridge.co.in"],sender="erpnext.notifications@carapaceinfra.com",subject=subject, content=content)
