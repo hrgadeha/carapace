@@ -23,13 +23,50 @@ def UpdateQTN(doc,method):
 
 @frappe.whitelist(allow_guest=True)
 def UpdateCommitedPO(doc,method):
-	doc.confirmed_by = frappe.session.user
-	doc.save()
 	if doc.budget_head:
 		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
 		doc_BH.committed += doc.total
 		doc_BH.yet_to_be_committed = doc_BH.budget - doc_BH.committed
 		doc_BH.save()
+
+		po = frappe.get_doc({
+		"doctype": "PO Total Tracker",
+		"po_no": doc.name,
+		"total": doc.total
+		})
+		po.insert(ignore_mandatory = True,ignore_permissions=True)
+		po.save(ignore_permissions=True)
+
+	frappe.db.set_value(doc.doctype, doc.name, 'confirmed_by', frappe.session.user)
+	frappe.db.commit()
+
+@frappe.whitelist(allow_guest=True)
+def before_updateCommitedPO(doc,method):
+	doc.advise_total = doc.total
+	doc.advise_grand_total = doc.rounded_total
+	doc.committed_amount = doc.rounded_total
+	total = frappe.db.sql("""select total from `tabPO Total Tracker` where name = %s;""",(doc.name))
+	doc.advice_outstanding_amount -= total[0][0]
+
+	if doc.budget_head:
+		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
+		doc_BH.committed -= total[0][0]
+		doc_BH.yet_to_be_committed = doc_BH.budget + doc_BH.committed
+		doc_BH.save()
+
+@frappe.whitelist(allow_guest=True)
+def on_updateCommitedPO(doc,method):
+	if doc.budget_head:
+		doc_BH = frappe.get_doc("Budget Head", doc.budget_head)
+		doc_BH.committed += doc.total
+		doc_BH.yet_to_be_committed = doc_BH.budget - doc_BH.committed
+		doc_BH.save()
+
+		doc_pt = frappe.get_doc("PO Total Tracker", doc.name)
+		doc_pt.total = doc.total
+		doc_pt.save()
+
+############################################################################################
 
 @frappe.whitelist(allow_guest=True)
 def UpdateCommited_cancelPO(doc,method):
@@ -145,7 +182,7 @@ def getPO(doctype, budget_head):
 
 @frappe.whitelist(allow_guest=True)
 def getPI(doctype, budget_head):
-        query="select pitem.parent,pi.posting_date,pitem.amount from `tabPurchase Invoice` pi, `tabPurchase Invoice Item` pitem where pi.docstatus = 1 and pi.name = pitem.parent and pitem.budget_head = '"+str(budget_head)+"';"
+        query="select pitem.parent,pi.posting_date,pitem.amount from `tabPurchase Invoice` pi, `tabPurchase Invoice Item` pitem where pi.docstatus = 1 and pi.update_budget_head = 1 and pi.name = pitem.parent and pitem.budget_head = '"+str(budget_head)+"';"
         li=[]
         dic=frappe.db.sql(query, as_dict=True)
         for i in dic:

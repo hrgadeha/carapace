@@ -90,7 +90,10 @@ doc_events = {
 		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.expClaim"
 	},
 	"Purchase Order": {
+#		"on_update": "carapace.carapace.doctype.budget_head.budget_head.UpdatePO_Value",
 		"on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommitedPO",
+		"before_update_after_submit": "carapace.carapace.doctype.budget_head.budget_head.before_updateCommitedPO",
+		"on_update_after_submit": "carapace.carapace.doctype.budget_head.budget_head.on_updateCommitedPO",
 		"on_cancel": "carapace.carapace.doctype.budget_head.budget_head.UpdateCommited_cancelPO"
 	},
 	"Purchase Invoice": {
@@ -116,9 +119,13 @@ doc_events = {
 #	"Project": {
  #               "after_insert": "carapace.carapace.doctype.gate_entry.gate_entry.createPS"
   #      },
-	"Sales Invoice": {
-                "on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateSI"
-        },
+#	"Sales Invoice": {
+ #               "on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateSI"
+  #      },
+		"Sales Invoice": {
+				"autoname": "carapace.carapace.auto_name_invoice.assign_temp_invoice_no",
+                "on_submit": "carapace.carapace.auto_name_invoice.rename_invoice",
+		},
 	"Quotation": {
                 "on_submit": "carapace.carapace.doctype.budget_head.budget_head.UpdateQTN"
         }

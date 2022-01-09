@@ -45,7 +45,7 @@ frappe.ui.form.on("Payment Advice Form", {
                         frm.set_value("payment_terms_template",tabletransfer.payment_terms_template)
                         frm.set_value("purchase_taxes_and_charges_template",tabletransfer.taxes_and_charges)
                         frm.set_value("total_taxes_amount",tabletransfer.total_taxes_and_charges)
-                        frm.set_value("total_amount",tabletransfer.net_total)
+                        frm.set_value("total_amount",tabletransfer.advise_total)
                         frm.set_value("grand_total",tabletransfer.rounded_total)
                         frm.set_value("outstanding_amount",tabletransfer.advice_outstanding_amount)
                         frm.set_value("project_site",tabletransfer.project_site)
@@ -88,7 +88,7 @@ frappe.ui.form.on("Payment Advice Form", {
 
 /* ###################################################################################################################################### */
 
-
+/*
 
 frappe.ui.form.on("Payment Advice Payment Terms", "add", function(frm, cdt, cdn){
 
@@ -103,11 +103,10 @@ frappe.ui.form.on("Payment Advice Payment Terms", "add", function(frm, cdt, cdn)
 	frm.set_value("payment_percent",percent);
 });
 
-
-
+*/
 /* ###################################################################################################################################### */
 
-
+/*
 
 frappe.ui.form.on("Payment Advice Taxes", "add", function(frm, cdt, cdn){
 	var ptax = frm.doc.payment_advice_taxes;
@@ -124,11 +123,7 @@ frappe.ui.form.on("Payment Advice Taxes", "add", function(frm, cdt, cdn){
 	frm.set_value("tax",tax);
 });
 
-
-
 /* ###################################################################################################################################### */
-
-
 
 frappe.ui.form.on('Payment Advice Form', {
 	allocate: function(frm) {
@@ -160,16 +155,14 @@ frappe.ui.form.on('Payment Advice Form', {
 
 		if(frm.doc.allocate == 1 && frm.doc.add_tax == 1){
 			total_with_tax = tax + pay;
-			frm.set_value("allocate_amount", total_with_tax);
+			frm.set_value("allocate_amount", Math.round(total_with_tax));
 		}
 
 		if(frm.doc.add_tax == 0){
-			frm.set_value("allocate_amount",pay);
+			frm.set_value("allocate_amount",Math.round(pay));
 		}
 	}
 });
-
-
 
 /* ###################################################################################################################################### */
 
@@ -307,7 +300,7 @@ frappe.ui.form.on("Payment Advice Expense", "qty", function(frm, cdt, cdn){
 	frappe.model.set_value(d.doctype, d.name, "total", (d.qty * d.rate));
    	for(var j in expense) {
 		total = total + expense[j].total;
-		frm.set_value("allocate_amount",total);
+		frm.set_value("allocate_amount",Math.round(total));
 	}
 });
 
@@ -330,7 +323,7 @@ frappe.ui.form.on("Payment Advice Expense", "payment_advice_expense_remove", fun
 	var total = 0;
    	for(var j in expense) {
 		total = total + expense[j].total;
-		frm.set_value("allocate_amount",total);
+		frm.set_value("allocate_amount",Math.round(total));
 	}
 	cur_frm.refresh();
 	cur_frm.refresh_fields();

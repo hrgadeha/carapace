@@ -55,6 +55,13 @@
   "reference_section",
   "get_details",
   "payment_advice_details",
+  "bbank_detailsb_section",
+  "bank",
+  "bank_account",
+  "bank_account_no",
+  "column_break_55",
+  "branch_code",
+  "swift_number",
   "amended_from"
  ],
  "fields": [
@@ -291,8 +298,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "To Pay",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "total",
@@ -369,11 +375,51 @@
    "fieldname": "payment_ref_number",
    "fieldtype": "Data",
    "label": "Payment Ref Number"
+  },
+  {
+   "fieldname": "bbank_detailsb_section",
+   "fieldtype": "Section Break",
+   "label": "<b>Bank Details</b>"
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Link",
+   "label": "Bank",
+   "options": "Bank",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Data",
+   "label": "Bank Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "label": "Bank Account No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_55",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "label": "Branch Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "swift_number",
+   "fieldtype": "Data",
+   "label": "IFSC Code",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2020-01-14 01:35:03.509053",
- "modified_by": "Administrator",
+ "modified": "2021-12-13 14:35:56.725959",
+ "modified_by": "stores@carapaceinfra.in",
  "module": "Carapace",
  "name": "Payment Advice Form",
  "owner": "Administrator",
